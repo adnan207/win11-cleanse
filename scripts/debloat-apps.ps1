@@ -1,42 +1,42 @@
-# language: PowerShell, file: scripts/debloat-apps.ps1, target: Windows 11
+# language: PowerShell, file: scripts/debloat-apps.ps1, target: Windows 11 / Windows 10
 param (
     [switch]$KeepGaming = $false,
-    [switch]$KeepStickyNotes = $false
+    [switch]$KeepStickyNotes = $false,
+    [switch]$RemovePhoneLink = $false
 )
 
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if ($isAdmin) {
     Write-Host "[+] Mode Administrator terdeteksi (Full AllUsers & Provisioned Cleanup)." -ForegroundColor Green
 } else {
-    Write-Host "[!] Mode Standard User terdeteksi (Membersihkan aplikasi akun saat ini). Jalankan Run as Administrator untuk menghapus dari seluruh sistem." -ForegroundColor Yellow
+    Write-Host "[!] Mode Standard User terdeteksi (Membersihkan aplikasi akun saat ini)." -ForegroundColor Yellow
 }
 
+# Daftar aplikasi bloatware yang dibersihkan (Ringan & Tetap Fungsional)
 $appsToRemove = @(
     "Clipchamp.Clipchamp",
-    "Microsoft.549981C3F5F10",
-    "Microsoft.BingNews",
-    "Microsoft.BingSearch",
-    "Microsoft.BingWeather",
-    "Microsoft.GetHelp",
-    "Microsoft.Getstarted",
-    "Microsoft.MicrosoftOfficeHub",
-    "Microsoft.MicrosoftSolitaireCollection",
-    "Microsoft.People",
-    "Microsoft.PowerAutomateDesktop",
-    "Microsoft.Todos",
-    "Microsoft.WindowsAlarms",
-    "microsoft.windowscommunicationsapps",
+    "Microsoft.549981C3F5F10",              # Cortana
+    "Microsoft.BingNews",                   # News
+    "Microsoft.BingSearch",                 # Bing Search
+    "Microsoft.BingWeather",                # Weather
+    "Microsoft.GetHelp",                    # Get Help
+    "Microsoft.Getstarted",                 # Tips / Get Started
+    "Microsoft.MicrosoftOfficeHub",         # Office Hub Promo
+    "Microsoft.MicrosoftSolitaireCollection", # Solitaire
+    "Microsoft.People",                     # People
+    "Microsoft.PowerAutomateDesktop",       # Power Automate
+    "Microsoft.Todos",                      # Microsoft To Do
+    "Microsoft.WindowsAlarms",              # Alarms & Clock
+    "microsoft.windowscommunicationsapps",  # Mail & Calendar promo
     "microsoft.windowscommunicationsapp",
-    "Microsoft.WindowsFeedbackHub",
-    "Microsoft.WindowsMaps",
-    "Microsoft.WindowsSoundRecorder",
-    "Microsoft.YourPhone",
-    "Microsoft.ZuneMusic",
-    "Microsoft.ZuneVideo",
-    "MicrosoftCorporationII.QuickAssist",
-    "MicrosoftWindows.Client.WebExperience",
-    "MicrosoftWindows.CrossDevice",
-    "MSTeams",
+    "Microsoft.WindowsFeedbackHub",         # Feedback Hub
+    "Microsoft.WindowsMaps",                # Maps
+    "Microsoft.WindowsSoundRecorder",       # Sound Recorder
+    "Microsoft.ZuneMusic",                  # Media Player Legacy
+    "Microsoft.ZuneVideo",                  # Movies & TV
+    "MicrosoftCorporationII.QuickAssist",   # Quick Assist
+    "MicrosoftWindows.Client.WebExperience", # Windows Widgets Engine (Hemat RAM)
+    "MSTeams",                              # Teams Personal
     "Microsoft.Office.ActionsServer",
     "Microsoft.OfficePushNotificationUtility",
     "Microsoft.OneDriveSync",
@@ -45,6 +45,18 @@ $appsToRemove = @(
     "Microsoft.Windows.DevHomeGitHubExtension"
 )
 
+# Phone Link (Link to Phone / Windows) - DIPERTAHANKAN SECARA DEFAULT
+if ($RemovePhoneLink) {
+    Write-Host "[!] Menghapus Phone Link sesuai permintaan..." -ForegroundColor Yellow
+    $appsToRemove += @(
+        "Microsoft.YourPhone",
+        "MicrosoftWindows.CrossDevice"
+    )
+} else {
+    Write-Host "[+] Menjaga Phone Link (Link to Phone) agar tetap aktif dan berfungsi normal." -ForegroundColor Green
+}
+
+# Gaming & Xbox components
 if (-not $KeepGaming) {
     $appsToRemove += @(
         "Microsoft.GamingApp",
@@ -58,6 +70,7 @@ if (-not $KeepGaming) {
     Write-Host "[Info] Menjaga paket gaming (Xbox & Gaming Overlay)..." -ForegroundColor Yellow
 }
 
+# Sticky Notes
 if (-not $KeepStickyNotes) {
     $appsToRemove += "Microsoft.MicrosoftStickyNotes"
 } else {
