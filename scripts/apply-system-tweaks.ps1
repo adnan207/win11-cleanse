@@ -56,4 +56,14 @@ if (!(Test-Path $dataColPath)) { New-Item -Path $dataColPath -Force | Out-Null }
 Set-ItemProperty -Path $dataColPath -Name "AllowTelemetry" -Value 0 -Type DWord -Force
 Set-ItemProperty -Path $dataColPath -Name "DoNotShowFeedbackNotifications" -Value 1 -Type DWord -Force
 
+# 7. Registry: Disable Xbox Guide button ms-gamebar trigger (mencegah popup ms-gamebar saat controller dinyalakan)
+Write-Host "[*] Menonaktifkan trigger ms-gamebar tombol controller..." -ForegroundColor Yellow
+$gbPath = "HKCU:\Software\Microsoft\GameBar"
+if (!(Test-Path $gbPath)) { New-Item -Path $gbPath -Force | Out-Null }
+Set-ItemProperty -Path $gbPath -Name "UseNexusForGameBarEnabled" -Value 0 -Type DWord -Force
+
+$gcsPath = "HKCU:\System\GameConfigStore"
+if (!(Test-Path $gcsPath)) { New-Item -Path $gcsPath -Force | Out-Null }
+Set-ItemProperty -Path $gcsPath -Name "GameDVR_Enabled" -Value 0 -Type DWord -Force
+
 Write-Host "=== Privacy & System Tweaks Selesai Diterapkan ===" -ForegroundColor Green
