@@ -19,6 +19,7 @@ Banyak script debloat di internet terlalu agresif—mereka mematikan Windows Def
 
 - 🛡️ **Windows Defender Tetap Aktif**: Proteksi *real-time* tidak dimatikan agar PC Anda tetap terlindungi dari virus dan malware.
 - 📱 **Phone Link Tetap Berfungsi**: Aplikasi **Link to Windows / Phone Link** tetap aman dan aktif secara default untuk sinkronisasi HP Anda.
+- 🎮 **Bebas Pop-up Kontroler (Gamepad Safe)**: Memutus trigger paksa protokol `ms-gamebar:` saat kontroler dinyalakan, mencegah pop-up mengganggu di tengah game.
 - 🪶 **Tanpa Aplikasi Tambahan yang Membebani**: Tidak memasang background tools yang berat. Fitur native Windows (Night Light, Volume Mixer, Print-to-PDF) dimaksimalkan.
 - 🔄 **Windows Update 100% Normal**: Sistem tetap menerima update keamanan berkala tanpa kendala.
 
@@ -97,6 +98,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\apply-system-tweaks.ps1
 - Mematikan service pelacak: `DiagTrack`, `dmwappushservice`, dan `WSAIFabricSvc`.
 - Mematikan iklan web Bing dan Cortana di Start Menu (pencarian Start Menu jadi instan & lokal).
 - Mematikan Advertising ID dan rekomendasi promosi Windows.
+- Menetralkan pemanggilan `ms-gamebar:` tombol kontroler agar tidak memunculkan dialog pop-up.
 - Mengaktifkan *Win32 Long Paths*.
 
 #### 3. Instalasi 7-Zip Minimalis (`install-apps.ps1`)
@@ -114,6 +116,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-apps.ps1
 | **Phone Link (Link to Windows)** | ✅ **Dipertahankan** | Sinkronisasi HP, SMS, dan notifikasi tetap berjalan normal. |
 | **Windows Defender Real-time** | ✅ **Dipertahankan** | Sistem tetap aman tanpa celah keamanan. |
 | **Windows Update** | ✅ **Dipertahankan** | Pembaruan sistem dan keamanan tetap dapat berjalan normal. |
+| **Kontroler / Gamepad** | ✅ **Dioptimalkan** | Tombol Xbox/PS bebas pop-up `ms-gamebar`, tetap normal di Steam. |
 | **7-Zip** (Opsional) | 📦 **Tersedia** | Pengganti native zip untuk format `.7z`, `.rar`, dsb. Ringan dan bebas background service. |
 | **Bing News, Weather, Search** | ❌ **Dihapus** | Menghilangkan konsumsi internet dan RAM di background. |
 | **Widgets WebExperience Engine** | ❌ **Dihapus** | Menghemat ratusan MB penggunaan memori idle. |
@@ -129,6 +132,14 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-apps.ps1
 <summary><b>Apakah menjalankan Run-Setup-As-Admin.bat sudah mencakup semua optimasi?</b></summary>
 <br>
 <b>Ya, semuanya langsung berjalan berurutan.</b> Skrip tersebut otomatis meminta hak Administrator, menerapkan tweak privasi/service telemetri, membersihkan seluruh bloatware UWP untuk semua akun di PC, dan me-refresh kebijakan sistem (<code>gpupdate /force</code>). Anda tidak perlu menjalankan skrip satu per satu lagi.
+</details>
+
+<details>
+<summary><b>Apakah kontroler (gamepad) tetap aman dan tidak memunculkan pop-up 'ms-gamebar'?</b></summary>
+<br>
+<b>Ya, 100% aman.</b> Skrip ini secara otomatis mematikan trigger tombol kontroler ke Game Bar dan mendaftarkan <i>silent dummy handler</i>, sehingga Windows tidak akan pernah memunculkan pesan pop-up <code>Get an app to open this 'ms-gamebar' link</code> saat kontroler dinyalakan. Kontroler (Xbox/PlayStation/Generic) tetap terdeteksi normal untuk bermain game di Steam.
+<br><br>
+<i>Catatan: Khusus kontroler PlayStation (DualShock / DualSense) via Bluetooth di game Steam, pastikan mengaktifkan <b>Enable Steam Input</b> pada properti game di Steam Library.</i>
 </details>
 
 <details>
